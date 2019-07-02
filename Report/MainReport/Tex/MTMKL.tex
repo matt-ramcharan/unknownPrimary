@@ -1,0 +1,31 @@
+\section{Multi-task Multiple-kernel Learning}
+
+take datasets show multi task is better than single task
+multi task is better than single kernel
+gives advantage in terms of test accuracy.
+
+point out that mtmkl for cancers in context of Cscape.
+
+
+
+\subsection{Widmer ratsch original paper}
+
+minimise
+
+\begin{equation}
+	\mathcal{R}(w) + C \mathcal{L}(w),
+\end{equation}
+
+where \(\mathcal{L}(w)\) is loss-term measuring training error and
+\(\mathcal{R}(w)\) is regulariser penalising the complexity of the model, \(w\).
+
+When considering multi task. there are several models \(w_1,...,w_T\), where \(T\) is the number of tasks.
+
+normally make a joint regularisation term to penalise discrepancy between individual models
+
+\begin{equation}
+	\mathcal{R}(w_1,...,w_T) + C \mathcal{L}(w_1,...,w_T),
+\end{equation}
+
+Often formulate task similarity matrix for regulariser.
+Paper 

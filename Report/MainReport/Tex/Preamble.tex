@@ -1,0 +1,56 @@
+\documentclass[11pt,a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+%\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+%\usepackage{helvet}
+%\renewcommand{\familydefault}{\sfdefault}
+% Referencing format
+\usepackage[sort, numbers, super, square]{natbib}
+\bibliographystyle{unsrtnat}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=2.5cm,bottom=2.5cm,left=2.5cm,right=2.5cm,marginparwidth=2.5cm]{geometry}
+%\fontsize{11pt}{13pt}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{xfrac}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{titling}
+\usepackage{parskip} %removes indents on new paragraphs
+\usepackage[toc,page]{appendix}
+\usepackage{chngpage}
+
+
+
+%Figures
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{chngpage}
+\usepackage{float}
+\usepackage{cleveref}
+
+%figures to end
+\usepackage[nomarkers,nolists]{endfloat}
+\renewcommand{\efloatseparator}{\mbox{}}
+
+%Colours for notes and shit
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{xcolor}
+
+\definecolor{Matt}{RGB}{131, 66, 244}
+\definecolor{Supervisor}{RGB}{0, 59, 255}
+
+
+\newcommand{\todoMatt}[1]{\todo[color = Matt!40]{#1}}
+\newcommand{\todoSupervisor}[1]{\todo[color = Supervisor!40]{#1}}
+
+
+
+\captionsetup{justification=centering}

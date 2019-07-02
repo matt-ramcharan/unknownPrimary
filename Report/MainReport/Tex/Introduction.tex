@@ -1,0 +1,21 @@
+\section{Introduction}
+
+\subsection{Motivation}
+Somatic mutations are any alteration in cell that will not be passed onto future generations \cite{Griffiths2000}. A somatic mutation in a cell of a fully developed organism can have little to no noticeable effect on the organism itself (often leading to benign growths), however mutations that give rise to cancer are a special case. Cancer arises either from inactivation of tumour suppressor genes, or mutation of a special category of genes called proto-oncogenes, many of which regulate cell division. When mutated, proto-oncogenes enter a state of uncontrolled division and become oncogenes, resulting in a cluster of cells called a tumour.  
+These types of cell division lead to malignant tumours, in which the excessive cell proliferation causes the tumour to spread into surrounding tissues and cause damage. 
+
+A common, probably simplistic, model view defines two classes of mutations, `driver' mutations, i.e. mutations that give a cancer cell a particular selective advantage, and functionally irrelevant `passenger' mutations.
+Discovering functionally important mutations, including clear ‘drivers’ is one goal of genome re-sequencing efforts \cite{Reva2011}. To understand the functional contribution of molecular alterations to oncogenesis, response to therapy and evolution of resistance to therapy it is important to have tools that predict the functional implications of mutations as early in the discovery process as possible.
+
+
+\subsection{Dataset}
+As a dataset, genome sequences are stored as Singular nucleotide polymorphisms, which are the difference in a single DNA building block, called a nucleotide. When SNPs occur within a gene (the coding region) or in a regulatory region near a gene (certain parts of the non-coding regions), they may play a more direct role in disease by affecting the gene’s function.
+
+The coding region, the portion of the genome which codes for proteins, accounts for only about 2\% of the whole sequence, and it is becoming increasingly evident that non-coding portions of the genome play crucial functional roles in human development and disease\cite{Esteller2011}. This implies there is merit to attempting the same methods on data from both the coding and non-coding regions of the human genome.
+
+\subsection{Project Aims and Objectives}
+In this project we focus on prediction of the effects of somatic point mutations leading to amino acid substitutions\cite{Shihab2013} in the coding and non-coding region of the human cancer genome. These predictions will be assigned a label as to if a point mutation is oncogenic (Likely cancerous) or benign. As such, the problem outlined in this paper is that of a binary classification problem.
+There are many cancer sequence databases currently being compiled, such as the Cancer Genome Atlas, COSMIC, and the National Cancer Institute and an large aspect of this project is selecting appropriate data to correctly train a cancer predictor, then test it holds up to a variety of data sources.
+
+
+\subsection{Plan of Report}

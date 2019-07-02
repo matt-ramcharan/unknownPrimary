@@ -1,0 +1,25 @@
+\section{Support Vector Machines}
+%
+%\cite{Campbell2011}
+
+Support Vectors Machines have become a well established tool within machine learning. They work well in practice and have now been used across a wide range of applications from recognizing hand-written digits, to face identification, text categorisation, bioinformatics, and database marketing.
+
+An SVM is an abstract learning machine which will learn from a training data set and attempt to generalize and make correct predictions on novel data.
+
+Since the problem outlined in this project is a binary classification problem. SVMs are an applicable method.
+
+For the training data we have a set of input vectors, denoted \(x_i\) , with each input vector having a number of component features. These input vectors are paired with corresponding labels, which we denote \(y_i\) and there are \(m\) such pairs (i = 1, ... , m).
+
+For this project. It is considered that an oncogenic (cancer causing) sample would be \(y_i=+1\), benign sample would \(y_i=-1\) and the matching \(x_i\) are input vectors encoding various genomic features derived from each mutation \(i\)
+
+For two classes of well separated data, the learning task amounts to finding a directed hyperplane, that is, an oriented hyperplane such that datapoints on one side will be labelled \(y_i = +1\) and those on the other side as \(y_i = −1\).
+
+\subsection{Proof}
+
+Let us consider a binary classification task with datapoints \(\mathbf{x_i} (i = 1, . . . , m)\) having corresponding labels \(y_i = \pm 1\) and let the decision function be:
+\begin{equation}
+	f (\mathbf{x}) = sign (\mathbf{w} \cdot \mathbf{x} + b)
+\end{equation}
+where \(\cdot\) is the scalar or inner product (so \(\mathbf{w} \cdot \mathbf{x} \equiv \mathbf{w}^T \mathbf{x}\)).
+
+

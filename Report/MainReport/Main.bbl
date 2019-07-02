@@ -1,0 +1,49 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Griffiths et~al.(2000)Griffiths, Miller, and Suzuki]{Griffiths2000}
+AJF Griffiths, JH~Miller, and DT~Suzuki.
+\newblock {An Introduction to Genetic Analysis. 7th edition.}
+\newblock chapter~15. New York: W. H. Freeman, 7th edition, 2000.
+\newblock ISBN 0-7167-3520-2.
+\newblock URL \url{https://www.ncbi.nlm.nih.gov/books/NBK21894/}.
+
+\bibitem[Reva et~al.(2011)Reva, Antipin, and Sander]{Reva2011}
+Boris Reva, Yevgeniy Antipin, and Chris Sander.
+\newblock {Predicting the functional impact of protein mutations: application
+  to cancer genomics.}
+\newblock \emph{Nucleic acids research}, 39\penalty0 (17):\penalty0 e118, sep
+  2011.
+\newblock ISSN 1362-4962.
+\newblock \doi{10.1093/nar/gkr407}.
+\newblock URL \url{http://www.ncbi.nlm.nih.gov/pubmed/21727090
+  http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=PMC3177186}.
+
+\bibitem[Esteller(2011)]{Esteller2011}
+Manel Esteller.
+\newblock {Non-coding RNAs in human disease}.
+\newblock \emph{Nature Reviews Genetics}, 12\penalty0 (12):\penalty0 861--874,
+  dec 2011.
+\newblock ISSN 1471-0056.
+\newblock \doi{10.1038/nrg3074}.
+\newblock URL \url{http://www.ncbi.nlm.nih.gov/pubmed/22094949
+  http://www.nature.com/articles/nrg3074}.
+
+\bibitem[Shihab et~al.(2013)Shihab, Gough, Cooper, Day, and Gaunt]{Shihab2013}
+Hashem~A. Shihab, Julian Gough, David~N. Cooper, Ian N.~M. Day, and Tom~R.
+  Gaunt.
+\newblock {Predicting the functional consequences of cancer-associated amino
+  acid substitutions}.
+\newblock \emph{Bioinformatics}, 29\penalty0 (12):\penalty0 1504--1510, jun
+  2013.
+\newblock ISSN 1460-2059.
+\newblock \doi{10.1093/bioinformatics/btt182}.
+\newblock URL \url{http://www.ncbi.nlm.nih.gov/pubmed/23620363
+  http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=PMC3673218
+  https://academic.oup.com/bioinformatics/article-lookup/doi/10.1093/bioinformatics/btt182}.
+
+\end{thebibliography}
