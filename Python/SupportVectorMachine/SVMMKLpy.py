@@ -1,11 +1,3 @@
-import sys
-sys.path.append(r"C:\Users\matt-\AppData\Local\Programs\Python\Python35\Lib\site-packages\cvxopt")
-import os
-# add the folder containing the DLL to the PATH variable
-os.environ['PATH'] += r';C:\Anaconda3\envs\foo\Library\mingw-w64\bin'
-
-
-
 #load data
 print ('loading \'breast cancer\' dataset...', end='')
 from sklearn.datasets import load_breast_cancer
@@ -64,9 +56,10 @@ roc_auc = roc_auc_score(Yte, y_score)
 print ('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
 
 
-#select the base-learner
-#MKL algorithms use a hard-margin as base learned (or KOMD in the case of EasyMKL). It is possible to define a different base learner
-from sklearn.svm import SVC
-base_learner = SVC(C=0.1)
-clf = EasyMKL(estimator=base_learner)
-clf = clf.fit(KLtr,Ytr)
+# #select the base-learner
+# #MKL algorithms use a hard-margin as base learned (or KOMD in the case of EasyMKL). It is possible to define a different base learner
+# from sklearn.svm import SVC
+# base_learner = SVC(C=0.1)
+# clf = EasyMKL(learner=base_learner)
+# clf = clf.fit(KLtr,Ytr)
+# print(clf)

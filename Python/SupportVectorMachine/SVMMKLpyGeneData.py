@@ -1,8 +1,18 @@
 #load data
-print ('loading \'breast cancer\' dataset...', end='')
-from sklearn.datasets import load_breast_cancer
-ds = load_breast_cancer()
-X,Y = ds.data, ds.target
+# print ('loading \'breast cancer\' dataset...', end='')
+# from sklearn.datasets import load_breast_cancer
+# ds = load_breast_cancer()
+# X,Y = ds.data, ds.target
+import pandas as pd
+ds = pd.read_csv('/home/matt/Documents/TechnicalProject/unknownPrimary/Python/DataFormatting/FullData.csv')
+Y = ds['Label']
+from sklearn.preprocessing import LabelEncoder
+labelencoder_y = LabelEncoder()
+Y = labelencoder_y.fit_transform(Y)
+# print(Y)
+X = ds.drop('Label', axis=1).values
+
+
 print ('done')
 
 '''
