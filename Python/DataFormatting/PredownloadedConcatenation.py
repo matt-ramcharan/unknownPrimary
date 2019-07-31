@@ -1,7 +1,5 @@
 import pandas as pd
 import os
-from tqdm import tqdm
-from scipy.io import savemat
 import numpy as np
 
 base_dir = "/home/matt/Documents/TechnicalProject/Data/GDC"
@@ -37,7 +35,7 @@ for count,(r,_,filename) in enumerate(os.walk(breast_dir)):
 
 ##COMPLETE CHECKS SAME GENES ARE USED IN FILES
 #savemat('BreastData500.mat', breast)
-breast.to_csv('BreastData' + str(num) + '.csv')
+breast.to_csv('BreastData' + str(breast.shape[1]) + '.csv')
 
 # #Debugging
 # frame = None
@@ -65,4 +63,25 @@ for count,(r,_,filename) in enumerate(os.walk(colon_dir)):
 
 ##COMPLETE CHECKS SAME GENES ARE USED IN FILES
 #savemat('ColonData500.mat', colon)
-colon.to_csv('ColonData'+ str(num) + '.csv')
+colon.to_csv('ColonData'+ str(colon.shape[1]) + '.csv')
+
+## Rectum Data#
+rectum_dir = base_dir+"/Rectum"
+
+rectum = []
+
+for count,(r,_,filename) in enumerate(os.walk(rectum_dir)):
+    if count<num:
+        for file in filename:
+            if file.endswith(".gz"):
+                if count == 1:
+                    rectum = pd.read_csv(str(r) + '/' + str(file), compression='gzip', delimiter='\t', names=[str(count)], index_col=0)
+                else:
+                    rectum_data = pd.read_csv(str(r) + '/' + str(file), compression='gzip', delimiter='\t',
+                                              names=[str(count)], index_col=0)
+                    rectum = pd.concat((rectum, rectum_data[str(count)]), axis=1)
+                    continue
+            else:
+                continue
+
+rectum.to_csv('RectumData'+ str(rectum.shape[1]) + '.csv')

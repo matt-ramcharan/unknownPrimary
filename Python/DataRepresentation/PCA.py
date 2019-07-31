@@ -41,4 +41,5 @@ for target, color in zip(targets,colors):
                , s = 50)
 ax.legend(['Breast', 'Colon'])
 ax.grid()
+plt.savefig('PCABreastColon.pdf')
 fig.show()
