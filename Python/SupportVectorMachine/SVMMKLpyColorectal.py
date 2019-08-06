@@ -15,17 +15,17 @@ X = ds.drop('Label', axis=1).values
 
 print ('imported data')
 
-from fancyimpute import KNN
-from numpy import nan
+# from fancyimpute import KNN
+# from numpy import nan
+#
+# X[X==0] = nan
+#
+#
+# knnImpute = KNN(k=3)
+# X_filled_knn = knnImpute.fit_transform(X)
+#
 
-X[X==0] = nan
-
-
-knnImpute = KNN(k=3)
-X_filled_knn = knnImpute.fit_transform(X)
-
-
-print ('Zeroes imputed')
+# print ('Zeroes imputed')
 
 '''
 WARNING: be sure that your matrix is not sparse! EXAMPLE:
@@ -50,20 +50,21 @@ print ('done')
 degrees=11
 print ('computing Homogeneous Polynomial Kernels...', end='')
 from MKLpy.metrics import pairwise
-# KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=d) for d in range(degrees)]
-# KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=d) for d in range(degrees)]
-KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=1)]
-KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=1)]
+KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=d) for d in range(degrees)]
+KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=d) for d in range(degrees)]
+# KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=1)]
+# KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=1)]
 print ('done')
 
 
 #MKL algorithms
 from MKLpy.algorithms import AverageMKL, EasyMKL, KOMD	#KOMD is not a MKL algorithm but a simple kernel machine like the SVM
-print ('training AverageMKL...', end='')
-clf = AverageMKL().fit(KLtr,Ytr)	#a wrapper for averaging kernels
-print ('done')
-print(clf.weights)			#print the weights of the combination of base kernels
-K_average = clf.ker_matrix	#the combined kernel matrix
+
+# print ('training AverageMKL...', end='')
+# clf = AverageMKL().fit(KLtr,Ytr)	#a wrapper for averaging kernels
+# print ('done')
+# print(clf.weights)			#print the weights of the combination of base kernels
+# K_average = clf.ker_matrix	#the combined kernel matrix
 
 
 print ('training EasyMKL...', end='')
@@ -71,6 +72,9 @@ clf = EasyMKL(lam=0.1).fit(KLtr,Ytr)		#combining kernels with the EasyMKL algori
 #lam is a hyper-parameter in [0,1]
 print ('done')
 print (clf.weights)
+K_average = clf.ker_matrix	#the combined kernel matrix
+
+
 
 #evaluate the solution
 from sklearn.metrics import accuracy_score, roc_auc_score
