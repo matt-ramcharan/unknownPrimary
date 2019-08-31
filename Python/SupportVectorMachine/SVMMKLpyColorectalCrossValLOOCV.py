@@ -87,7 +87,7 @@ for lam in [0, 0.01, 0.1, 0.2, 0.9, 1]:	# possible lambda values for the EasyMKL
     # the counterpart cross_val_score optimized the roc_auc_score (use score='roc_auc')
     # WARNING: these functions will change in the next version
     scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=lam), score='accuracy')
-    print ('Validation scores are: ' + str(scores), end='\n')
+    # print ('Validation scores are: ' + str(scores), end='\n')
     acc = np.mean(scores)
     if not best_results or best_results['score'] < acc:
         best_results = {'lam' : lam, 'score' : acc}
@@ -97,10 +97,12 @@ print('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],b
 from sklearn.metrics import accuracy_score, roc_auc_score
 print ('done')
 clf = EasyMKL(learner=base_learner, lam=best_results['lam']).fit(KLtr,Ytr)
-y_pred = clf.predict(KLte)
-y_score = clf.decision_function(KLte)		#rank
-accuracy = accuracy_score(Yte, y_pred)
-roc_auc = roc_auc_score(Yte, y_score)
+scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=best_results['lam']), score='accuracy')
+accuracy = np.mean(scores)
+
+scores_roc = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=best_results['lam']),f='decision_function', score='roc_auc')
+roc_auc = np.mean(scores_roc)
+
 tr_pred = clf.predict(KLtr)
 tr_err = accuracy_score(Ytr, tr_pred)
 print ('Training Error: %.3f' % tr_err)

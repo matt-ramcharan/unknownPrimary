@@ -30,7 +30,7 @@ X = normalization(X) #||X_i||_2^2 = 1
 
 #train/test split
 from sklearn.model_selection import train_test_split
-Xtr,Xte,Ytr,Yte = train_test_split(X,Y, test_size=.5, random_state=42, shuffle=True)
+Xtr,Xte,Ytr,Yte = train_test_split(X,Y, test_size=.25, random_state=42, shuffle=True)
 print ('Splitting Done')
 
 
@@ -111,14 +111,14 @@ from sklearn.metrics import roc_curve, auc
 # Compute ROC curve and ROC area for each class
 fpr = dict()
 tpr = dict()
-roc_auc = dict()
+roc_aucc = dict()
 for i in range(2):
     fpr[i], tpr[i], _ = roc_curve(Yte, y_score)
-    roc_auc[i] = auc(fpr[i], tpr[i])
+    roc_aucc[i] = auc(fpr[i], tpr[i])
 
 # Compute micro-average ROC curve and ROC area
 fpr["micro"], tpr["micro"], _ = roc_curve(Yte.ravel(), y_score.ravel())
-roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+roc_aucc["micro"] = auc(fpr["micro"], tpr["micro"])
 
 plt.figure()
 lw = 2
@@ -130,6 +130,13 @@ plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
-plt.title('Receiver operating characteristic example')
+plt.title('Receiver operating characteristic: Breast and Colon')
 plt.legend(loc="lower right")
+plt.savefig('Figs/ROCBreastColon.pdf',format='pdf')
 plt.show()
+
+f= open("BreastColon.txt","w+")
+f.write('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],best_results['lam']))
+f.write('Training Error: %.3f' % tr_err)
+f.write('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
+f.close()
