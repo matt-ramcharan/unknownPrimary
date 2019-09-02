@@ -93,7 +93,7 @@ y_score = clf.decision_function(KLte)		#rank
 accuracy = balanced_accuracy_score(Yte, y_pred)
 roc_auc = roc_auc_score(Yte, y_score)
 
-print ('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
+print ('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
 
 
 # #select the base-learner
@@ -135,7 +135,7 @@ plt.savefig('Figs/ROCBreastColon.pdf',format='pdf')
 plt.show()
 
 f= open("BreastColon.txt","w+")
-f.write('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],best_results['lam']))
-f.write('Training Error: %.3f' % tr_err)
-f.write('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
+f.write('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_results['C']))
+f.write('Training Error: %.9f' % tr_err)
+f.write('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
 f.close()

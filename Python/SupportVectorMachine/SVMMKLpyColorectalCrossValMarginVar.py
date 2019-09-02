@@ -110,25 +110,33 @@ from sklearn.metrics import roc_curve, auc
 # Compute ROC curve and ROC area for each class
 fpr = dict()
 tpr = dict()
-roc_auc = dict()
+roc_aucc = dict()
 for i in range(2):
     fpr[i], tpr[i], _ = roc_curve(Yte, y_score)
-    roc_auc[i] = auc(fpr[i], tpr[i])
+    roc_aucc[i] = auc(fpr[i], tpr[i])
 
 # Compute micro-average ROC curve and ROC area
 fpr["micro"], tpr["micro"], _ = roc_curve(Yte.ravel(), y_score.ravel())
-roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+roc_aucc["micro"] = auc(fpr["micro"], tpr["micro"])
 
 plt.figure()
 lw = 2
 plt.plot(fpr[1], tpr[1], color='darkorange',
-         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[1
+         lw=lw, label='ROC curve (area = %0.2f)' % roc_aucc[1
     ])
 plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
 plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
-plt.title('Receiver operating characteristic example')
+plt.title('Receiver operating characteristic: Colon and Rectum')
 plt.legend(loc="lower right")
+plt.savefig('Figs/ROCColorectal.pdf',format='pdf')
 plt.show()
+
+
+f= open("Colorectal.txt","w+")
+f.write('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_results['C']))
+f.write('Training Error: %.9f' % tr_err)
+f.write('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
+f.close()

@@ -60,7 +60,7 @@ for C in [1e-4,1e-3,1e-2,1e-1,1,1e2,1e3,1e4,1e5]:
     print('Acc: %.9f with C: %i' %(acc,C))
     if not best_results or best_results['score'] < acc:
         best_results = {'C' : C, 'score' : acc}
-print('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_results['C']))
+print('Best validation accuracy: %.9f with C: %.9f' %(best_results['score'],best_results['C']))
 
 
 
@@ -85,7 +85,7 @@ clf = EasyMKL(learner=SVC(C=best_results['C']), lam=0).fit(KLtr,Ytr)
 tr_pred = clf.predict(KLtr)
 # tr_err = accuracy_score(Ytr, tr_pred)
 tr_err = balanced_accuracy_score(Ytr, tr_pred)
-print ('Training Error: %.3f' % tr_err)
+print ('Training Error: %.9f' % tr_err)
 y_pred = clf.predict(KLte)					#predictions
 y_score = clf.decision_function(KLte)		#rank
 
@@ -93,7 +93,7 @@ y_score = clf.decision_function(KLte)		#rank
 accuracy = balanced_accuracy_score(Yte, y_pred)
 roc_auc = roc_auc_score(Yte, y_score)
 
-print ('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
+print ('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
 
 
 # #select the base-learner
@@ -129,13 +129,14 @@ plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
-plt.title('Receiver operating characteristic: Pancreas and Colon')
+plt.title('Receiver operating characteristic: Pancreas and Breast')
 plt.legend(loc="lower right")
-plt.savefig('Figs/ROCPancreasColon.pdf',format='pdf')
+plt.savefig('Figs/ROCPancreasBreast.pdf',format='pdf')
 plt.show()
 
-f= open("PancreasColon.txt","w+")
-f.write('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],best_results['lam']))
-f.write('Training Error: %.3f' % tr_err)
-f.write('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
+f= open("Figs/All.txt","w+")
+f.write('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_results['C']))
+f.write('Training Error: %.9f' % tr_err)
+f.write('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
 f.close()
+

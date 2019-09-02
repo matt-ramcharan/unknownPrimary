@@ -4,7 +4,7 @@
 # ds = load_breast_cancer()
 # X,Y = ds.data, ds.target
 import pandas as pd
-ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullDataColonPancreas182.csv')
+ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullDataColoRectalBreastPancreas93.csv')
 Y = ds['Label']
 from sklearn.preprocessing import LabelEncoder
 labelencoder_y = LabelEncoder()
@@ -93,7 +93,7 @@ y_score = clf.decision_function(KLte)		#rank
 accuracy = balanced_accuracy_score(Yte, y_pred)
 roc_auc = roc_auc_score(Yte, y_score)
 
-print ('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
+print ('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
 
 
 # #select the base-learner
@@ -129,13 +129,13 @@ plt.xlim([0.0, 1.0])
 plt.ylim([0.0, 1.05])
 plt.xlabel('False Positive Rate')
 plt.ylabel('True Positive Rate')
-plt.title('Receiver operating characteristic: Pancreas and Colon')
+plt.title('Receiver operating characteristic: Colon, Rectum, Breast and Pancreas')
 plt.legend(loc="lower right")
-plt.savefig('Figs/ROCPancreasColon.pdf',format='pdf')
+plt.savefig('Figs/ROCAll.pdf',format='pdf')
 plt.show()
 
-f= open("Figs/PancreasColon.txt","w+")
-f.write('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_results['C']))
-f.write('Training Error: %.9f' % tr_err)
-f.write('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
+f= open("All.txt","w+")
+f.write('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],best_results['lam']))
+f.write('Training Error: %.3f' % tr_err)
+f.write('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
 f.close()
