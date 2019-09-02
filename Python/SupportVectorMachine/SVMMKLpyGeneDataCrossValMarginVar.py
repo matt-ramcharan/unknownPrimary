@@ -51,19 +51,16 @@ from MKLpy.algorithms import EasyMKL, KOMD	# KOMD is not a MKL algorithm but a s
 from LOOCV import cross_val_predict
 from sklearn.svm import SVC
 import numpy as np
-print ('tuning lambda for EasyMKL...', end='\n')
-base_learner = SVC(C=10000)	# simil hard-margin svm
-best_results = {}
-for lam in [0, 0.01, 0.1, 0.2, 0.9, 1]:	# possible lambda values for the EasyMKL algorithm
-    # MKLpy.model_selection.cross_val_predict performs the cross validation automatically, it optimizes the accuracy
-    # the counterpart cross_val_score optimized the roc_auc_score (use score='roc_auc')
-    # WARNING: these functions will change in the next version
-    scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=lam), score='accuracy')
-    print ('Validation scores are: ' + str(scores), end='\n')
+best_results ={}
+for C in [1e-4,1e-3,1e-2,1e-1,1,1e2,1e3,1e4,1e5]:
+    base_learner = SVC(C=C)	# simil hard-margin svm
+    scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=0), score='accuracy')
+    #print ('Validation scores are: ' + str(scores), end='\n')
     acc = np.mean(scores)
+    print('Acc: %.9f with C: %i' %(acc,C))
     if not best_results or best_results['score'] < acc:
-        best_results = {'lam' : lam, 'score' : acc}
-print('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],best_results['lam']))
+        best_results = {'C' : C, 'score' : acc}
+print('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_results['C']))
 
 
 
@@ -83,15 +80,17 @@ print('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],b
 # print (clf.weights)
 #
 #evaluate the solution
-from sklearn.metrics import accuracy_score, roc_auc_score
-clf = EasyMKL(learner=base_learner, lam=best_results['lam']).fit(KLtr,Ytr)
+from sklearn.metrics import accuracy_score, roc_auc_score, balanced_accuracy_score
+clf = EasyMKL(learner=SVC(C=best_results['C']), lam=0).fit(KLtr,Ytr)
 tr_pred = clf.predict(KLtr)
-tr_err = accuracy_score(Ytr, tr_pred)
+# tr_err = accuracy_score(Ytr, tr_pred)
+tr_err = balanced_accuracy_score(Ytr, tr_pred)
 print ('Training Error: %.3f' % tr_err)
 y_pred = clf.predict(KLte)					#predictions
 y_score = clf.decision_function(KLte)		#rank
 
-accuracy = accuracy_score(Yte, y_pred)
+# accuracy = accuracy_score(Yte, y_pred)
+accuracy = balanced_accuracy_score(Yte, y_pred)
 roc_auc = roc_auc_score(Yte, y_score)
 
 print ('Accuracy score: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
@@ -123,7 +122,7 @@ roc_aucc["micro"] = auc(fpr["micro"], tpr["micro"])
 plt.figure()
 lw = 2
 plt.plot(fpr[1], tpr[1], color='darkorange',
-         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[1
+         lw=lw, label='ROC curve (area = %0.2f)' % roc_aucc[1
     ])
 plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
 plt.xlim([0.0, 1.0])

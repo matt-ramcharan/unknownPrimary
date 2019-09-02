@@ -4,7 +4,7 @@
 # ds = load_breast_cancer()
 # X,Y = ds.data, ds.target
 import pandas as pd
-ds = pd.read_csv('/home/matt/Documents/TechnicalProject/unknownPrimary/Python/DataFormatting/FullDataColoRectal93.csv')
+ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullDataColoRectal93.csv')
 Y = ds['Label']
 from sklearn.preprocessing import LabelEncoder
 labelencoder_y = LabelEncoder()
@@ -71,7 +71,7 @@ KL = [kernel_normalization(pairwise.homogeneous_polynomial_kernel(X, degree=1))]
 
 #train/test KL split (N.B. here we split a kernel list directly)
 from MKLpy.model_selection import train_test_split
-KLtr,KLte,Ytr,Yte = train_test_split(KL, Y, test_size=.25)#, random_state=42)
+KLtr,KLte,Ytr,Yte = train_test_split(KL, Y, test_size=.25, random_state=42)
 
 # MKL algorithms
 from MKLpy.algorithms import EasyMKL, KOMD	# KOMD is not a MKL algorithm but a simple kernel machine like the SVM

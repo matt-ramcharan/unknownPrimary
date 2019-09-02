@@ -71,8 +71,7 @@ KL = [kernel_normalization(pairwise.homogeneous_polynomial_kernel(X, degree=1))]
 
 #train/test KL split (N.B. here we split a kernel list directly)
 from MKLpy.model_selection import train_test_split
-KLtr,KLte,Ytr,Yte = train_test_split(KL, Y, test_size=.25)#, random_state=42)
-
+KLtr,KLte,Ytr,Yte = train_test_split(KL, Y, test_size=.25, random_state=10)
 # MKL algorithms
 from MKLpy.algorithms import EasyMKL, KOMD	# KOMD is not a MKL algorithm but a simple kernel machine like the SVM
 # from MKLpy.model_selection import cross_val_score, cross_val_predict
@@ -80,31 +79,27 @@ from LOOCV import cross_val_predict
 from sklearn.svm import SVC
 import numpy as np
 print ('tuning lambda for EasyMKL...', end='\n')
-base_learner = SVC(C=10000)	# simil hard-margin svm
 best_results = {}
-for lam in [0, 0.01, 0.1, 0.2, 0.9, 1]:	# possible lambda values for the EasyMKL algorithm
-    # MKLpy.model_selection.cross_val_predict performs the cross validation automatically, it optimizes the accuracy
-    # the counterpart cross_val_score optimized the roc_auc_score (use score='roc_auc')
-    # WARNING: these functions will change in the next version
-    scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=lam), score='accuracy')
-    # print ('Validation scores are: ' + str(scores), end='\n')
+for C in [1e-4,1e-3,1e-2,1e-1,1,1e2,1e3,1e4,1e5]:
+    base_learner = SVC(C=C)	# simil hard-margin svm
+    scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=0), score='accuracy')
+    #print ('Validation scores are: ' + str(scores), end='\n')
     acc = np.mean(scores)
+    print('Acc: %.9f with C: %i' %(acc,C))
     if not best_results or best_results['score'] < acc:
-        best_results = {'lam' : lam, 'score' : acc}
-print('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],best_results['lam']))
+        best_results = {'C' : C, 'score' : acc}
+print('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_results['C']))
 
 #evaluation on the test set
-from sklearn.metrics import accuracy_score, roc_auc_score
+from sklearn.metrics import accuracy_score, roc_auc_score, balanced_accuracy_score
 print ('done')
-clf = EasyMKL(learner=base_learner, lam=best_results['lam']).fit(KLtr,Ytr)
-scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=best_results['lam']), score='accuracy')
-accuracy = np.mean(scores)
-print(accuracy)
-scores_roc = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=best_results['lam']),f='decision_function', score='roc_auc')
-roc_auc = np.mean(scores_roc)
-
+clf = EasyMKL(learner=SVC(C=best_results['C']), lam=0).fit(KLtr,Ytr)
+y_pred = clf.predict(KLte)
+y_score = clf.decision_function(KLte)		#rank
+accuracy = balanced_accuracy_score(Yte, y_pred)
+roc_auc = roc_auc_score(Yte, y_score)
 tr_pred = clf.predict(KLtr)
-tr_err = accuracy_score(Ytr, tr_pred)
+tr_err = balanced_accuracy_score(Ytr, tr_pred)
 print ('Training Error: %.3f' % tr_err)
 print ('accuracy on the test set: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
 # print (clf)

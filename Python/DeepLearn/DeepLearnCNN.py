@@ -26,30 +26,37 @@ from MKLpy.preprocessing import normalization, rescale_01
 X = rescale_01(X)	#feature scaling in [0,1]
 X = normalization(X) #||X_i||_2^2 = 1
 
+
+
+
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=.25, shuffle=True, random_state=1)
+
+#Reshape to 'images'
+X_train.resize(X_train.shape[0], 120, 120,  1)
+X_test.resize(X_test.shape[0], 120, 120, 1)
 
 #Model
 
 import numpy
 from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
+from keras.layers import Dense, Dropout, Conv2D, Flatten
 
 # fix random seed for reproducibility
 seed = 7
 numpy.random.seed(seed)
 
 classifier = Sequential()
-#First Hidden Layer
-classifier.add(Dense(14000, activation='relu', kernel_initializer='random_normal', input_dim=X.shape[1]))#Second  Hidden Layer
-# classifier.add(Dense(120, activation='sigmoid', kernel_initializer='random_normal'))
-#classifier.add(Dense(1, activation='sigmoid', kernel_initializer='random_normal'))
-
-# classifier.add(Dropout(0.5))
-
-#classifier.add(Dense(5, activation='relu', kernel_initializer='random_normal'))#Output Layer
-classifier.add(Dense(1, activation='sigmoid', kernel_initializer='random_normal'))
+#add model layers
+classifier.add(Conv2D(64, kernel_size=3, activation='relu', input_shape=(120, 120, 1)))
+classifier.add(Conv2D(128, kernel_size=3, activation='relu'))
+classifier.add(Conv2D(256, kernel_size=3, activation='relu'))
+classifier.add(Flatten())
+# classifier.add(Dropout(0.25))
+# classifier.add(Dense(36864, activation='relu'))
+# classifier.add(Dense(1024, activation='relu'))
+# classifier.add(Dense(512, activation='relu'))
+classifier.add(Dense(1, activation='softmax'))
 
 #Compiling the neural network
 classifier.compile(optimizer ='adam',loss='binary_crossentropy', metrics =['accuracy'])
