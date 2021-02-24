@@ -1,5 +1,5 @@
 import pandas as pd
-ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullDataColoRectal93.csv')
+ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullData.csv')
 Y = ds['Label']
 from sklearn.preprocessing import LabelEncoder
 labelencoder_y = LabelEncoder()
@@ -20,19 +20,11 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 
 # Split dataset into training set and test set
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25) # 70% training and 30% test
-
-from sklearn.svm import SVC
-base_learner = SVC(C=10000, gamma='auto')
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25, random_state=1) # 70% training and 30% test
 
 from sklearn.ensemble import AdaBoostClassifier
-from sklearn.model_selection import LeaveOneOut
 
-import numpy as np
-scores=[]
-clf = AdaBoostClassifier(base_estimator=base_learner, learning_rate=1, n_estimators=100, algorithm='SAMME',
-                        random_state=0)
-
+clf = AdaBoostClassifier(n_estimators=100, random_state=0)
 
 model = clf.fit(X_train, y_train)
 
@@ -41,10 +33,11 @@ model = clf.fit(X_train, y_train)
 
 
 y_pred = model.predict(X_test)
-
+y_pred_train = model.predict(X_train)
 # Model Accuracy, how often is the classifier correct?
 print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+print("Train Accuracy:",metrics.accuracy_score(y_train, y_pred_train))
 
-# print(clf.feature_importances_)
-# print(clf.predict([[0, 0, 0, 0]]))
+print(clf.feature_importances_)
+#print(clf.predict([[0, 0, 0, 0]]))
 #print(clf.score(X, Y))

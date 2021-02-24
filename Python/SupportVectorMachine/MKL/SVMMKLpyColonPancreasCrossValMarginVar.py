@@ -4,13 +4,17 @@
 # ds = load_breast_cancer()
 # X,Y = ds.data, ds.target
 import pandas as pd
-ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullDataColoRectalBreastPancreas93.csv')
+ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullDataColonPancreas182.csv')
 Y = ds['Label']
 from sklearn.preprocessing import LabelEncoder
 labelencoder_y = LabelEncoder()
 Y = labelencoder_y.fit_transform(Y)
 # print(Y)
 X = ds.drop('Label', axis=1).values
+# Delete all columns with zeroes
+mask = (X==0)
+alt_mask = [not(any(col)) for col in mask.T]
+X = X[:,alt_mask]
 
 
 print ('done')
@@ -36,11 +40,12 @@ print ('Splitting Done')
 
 print ('computing Linear Kernel', end='\n')
 from MKLpy.metrics import pairwise
-KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=1)]
-KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=1)]
+# KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=1)]
+# KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=1)]
 # from MKLpy.metrics import pairwise
-# KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=d) for d in range(degrees)]
-# KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=d) for d in range(degrees)]
+from sklearn.metrics.pairwise import rbf_kernel
+KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=1), rbf_kernel(Xtr,gamma=1)]
+KLte = [pairwise.homogeneous_polynomial_kernel(Xte, Xtr, degree=1), rbf_kernel(Xte, Xtr, gamma=1)]
 # # KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=1)]
 # # KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=1)]
 print ('done')
@@ -52,12 +57,9 @@ from LOOCV import cross_val_predict
 from sklearn.svm import SVC
 import numpy as np
 best_results ={}
-
-#clf = EasyMKL(learner=SVC(C=10), lam=0, multiclass_strategy='ovo').fit(KLtr,Ytr)
-
 for C in [1e-4,1e-3,1e-2,1e-1,1,1e2,1e3,1e4,1e5]:
     base_learner = SVC(C=C)	# simil hard-margin svm
-    scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=0, multiclass_strategy='ovo'), score='accuracy')
+    scores = cross_val_predict(KLtr, Ytr, EasyMKL(learner=base_learner, lam=0), score='accuracy')
     #print ('Validation scores are: ' + str(scores), end='\n')
     acc = np.mean(scores)
     print('Acc: %.9f with C: %i' %(acc,C))
@@ -84,20 +86,19 @@ print('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_r
 #
 #evaluate the solution
 from sklearn.metrics import accuracy_score, roc_auc_score, balanced_accuracy_score
-clf = EasyMKL(learner=SVC(C=best_results['C']), lam=0, multiclass_strategy='ovo').fit(KLtr,Ytr)
-print (clf.weights)
+clf = EasyMKL(learner=SVC(C=best_results['C']), lam=0).fit(KLtr,Ytr)
 tr_pred = clf.predict(KLtr)
 # tr_err = accuracy_score(Ytr, tr_pred)
 tr_err = balanced_accuracy_score(Ytr, tr_pred)
 print ('Training Error: %.3f' % tr_err)
 y_pred = clf.predict(KLte)					#predictions
-# y_score = clf.decision_function(KLte)		#rank
+y_score = clf.decision_function(KLte)		#rank
 
 # accuracy = accuracy_score(Yte, y_pred)
 accuracy = balanced_accuracy_score(Yte, y_pred)
-# roc_auc = roc_auc_score(Yte, y_score)
+roc_auc = roc_auc_score(Yte, y_score)
 
-print ('Accuracy score: %.9f' % accuracy)# , roc AUC score: % .9f') # % (accuracy))#, roc_auc))
+print ('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
 
 
 # #select the base-learner
@@ -108,38 +109,38 @@ print ('Accuracy score: %.9f' % accuracy)# , roc AUC score: % .9f') # % (accurac
 # clf = clf.fit(KLtr,Ytr)
 # print(clf)
 
-# import matplotlib.pyplot as plt
-# from sklearn.metrics import roc_curve, auc
-#
-# # Compute ROC curve and ROC area for each class
-# fpr = dict()
-# tpr = dict()
-# roc_aucc = dict()
-# for i in range(2):
-#     fpr[i], tpr[i], _ = roc_curve(Yte, y_score)
-#     roc_aucc[i] = auc(fpr[i], tpr[i])
-#
-# # Compute micro-average ROC curve and ROC area
-# fpr["micro"], tpr["micro"], _ = roc_curve(Yte.ravel(), y_score.ravel())
-# roc_aucc["micro"] = auc(fpr["micro"], tpr["micro"])
-#
-# plt.figure()
-# lw = 2
-# plt.plot(fpr[1], tpr[1], color='darkorange',
-#          lw=lw, label='ROC curve (area = %0.2f)' % roc_aucc[1
-#     ])
-# plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
-# plt.xlim([0.0, 1.0])
-# plt.ylim([0.0, 1.05])
-# plt.xlabel('False Positive Rate')
-# plt.ylabel('True Positive Rate')
-# plt.title('Receiver operating characteristic: Colon, Rectum, Breast and Pancreas')
-# plt.legend(loc="lower right")
-# plt.savefig('Figs/ROCAll.pdf',format='pdf')
-# plt.show()
+import matplotlib.pyplot as plt
+from sklearn.metrics import roc_curve, auc
 
-f = open("All.txt","w+")
-f.write('Best validation accuracy: %.3f with C: %.9f' %(best_results['score'],best_results['C']))
+# Compute ROC curve and ROC area for each class
+fpr = dict()
+tpr = dict()
+roc_aucc = dict()
+for i in range(2):
+    fpr[i], tpr[i], _ = roc_curve(Yte, y_score)
+    roc_aucc[i] = auc(fpr[i], tpr[i])
+
+# Compute micro-average ROC curve and ROC area
+fpr["micro"], tpr["micro"], _ = roc_curve(Yte.ravel(), y_score.ravel())
+roc_aucc["micro"] = auc(fpr["micro"], tpr["micro"])
+
+plt.figure()
+lw = 2
+plt.plot(fpr[1], tpr[1], color='darkorange',
+         lw=lw, label='ROC curve (area = %0.2f)' % roc_aucc[1
+    ])
+plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+plt.xlim([0.0, 1.0])
+plt.ylim([0.0, 1.05])
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('Receiver operating characteristic: Pancreas and Colon')
+plt.legend(loc="lower right")
+plt.savefig('Figs/ROCPancreasColon.pdf',format='pdf')
+plt.show()
+
+f= open("Figs/PancreasColon.txt","w+")
+f.write('Best validation accuracy: %.9f with C: %i' %(best_results['score'],best_results['C']))
 f.write('Training Error: %.9f' % tr_err)
 f.write('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
 f.close()

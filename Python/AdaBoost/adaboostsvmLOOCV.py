@@ -1,5 +1,5 @@
 import pandas as pd
-ds = pd.read_csv('/home/matt/Documents/TechnicalProject/unknownPrimary/Python/DataFormatting/FullDataColoRectal93.csv')
+ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullDataColoRectal93.csv')
 Y = ds['Label']
 from sklearn.preprocessing import LabelEncoder
 labelencoder_y = LabelEncoder()
@@ -20,7 +20,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import metrics
 
 # Split dataset into training set and test set
-# X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3) # 70% training and 30% test
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3) # 70% training and 30% test
 
 from sklearn.svm import SVC
 base_learner = SVC(C=10000, gamma='auto')

@@ -1,0 +1,1 @@
+Best validation accuracy: 0.875 with C: 100.000000000Training Error: 1.000000000

@@ -23,14 +23,14 @@ X = normalization(X) #||X_i||_2^2 = 1
 #Import scikit-learn metrics module for accuracy calculation
 from sklearn import metrics
 
+from sklearn.model_selection import train_test_split
 # Split dataset into training set and test set
-# X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3) # 70% training and 30% test
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.25) # 70% training and 30% test
 
 from sklearn.svm import SVC
 base_learner = SVC(C=10000, gamma='auto')
 
 from sklearn.ensemble import AdaBoostClassifier
-from sklearn.model_selection import LeaveOneOut
 
 import numpy as np
 from sklearn.model_selection import LeaveOneOut

@@ -36,8 +36,9 @@ print ('Splitting Done')
 
 print ('computing Linear Kernel', end='\n')
 from MKLpy.metrics import pairwise
-KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=1)]
-KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=1)]
+from sklearn.metrics.pairwise import rbf_kernel
+KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=1), rbf_kernel(Xtr,gamma=1)]
+KLte = [pairwise.homogeneous_polynomial_kernel(Xte, Xtr, degree=1), rbf_kernel(Xte, Xtr, gamma=1)]
 # from MKLpy.metrics import pairwise
 # KLtr = [pairwise.homogeneous_polynomial_kernel(Xtr, degree=d) for d in range(degrees)]
 # KLte = [pairwise.homogeneous_polynomial_kernel(Xte,Xtr, degree=d) for d in range(degrees)]
@@ -97,7 +98,7 @@ y_pred = clf.predict(KLte)					#predictions
 accuracy = balanced_accuracy_score(Yte, y_pred)
 # roc_auc = roc_auc_score(Yte, y_score)
 
-print ('Accuracy score: %.9f' % accuracy)# , roc AUC score: % .9f') # % (accuracy))#, roc_auc))
+print ('Accuracy score: %.9f' % accuracy)
 
 
 # #select the base-learner
@@ -138,7 +139,7 @@ print ('Accuracy score: %.9f' % accuracy)# , roc AUC score: % .9f') # % (accurac
 # plt.savefig('Figs/ROCAll.pdf',format='pdf')
 # plt.show()
 
-f = open("All.txt","w+")
+f= open("All.txt","w+")
 f.write('Best validation accuracy: %.3f with C: %.9f' %(best_results['score'],best_results['C']))
 f.write('Training Error: %.9f' % tr_err)
 f.write('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))

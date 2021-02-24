@@ -4,7 +4,7 @@
 # ds = load_breast_cancer()
 # X,Y = ds.data, ds.target
 import pandas as pd
-ds = pd.read_csv('/home/matt/Documents/TechnicalProject/unknownPrimary/Python/DataFormatting/FullDataColoRectal93.csv')
+ds = pd.read_csv(r'C:\Users\matt-\Documents\Uni\TechnicalProject\unknownPrimary\Python\DataFormatting\FullDataBreastPancreas182.csv')
 Y = ds['Label']
 from sklearn.preprocessing import LabelEncoder
 labelencoder_y = LabelEncoder()
@@ -64,25 +64,28 @@ import numpy as np
 print ('Computing RBF Kernel')
 from sklearn.metrics.pairwise import rbf_kernel
 from MKLpy.preprocessing import kernel_normalization
-grange = np.linspace(0,10,21)
+grange = np.linspace(10e-3,10e3,10)
 KLC = [kernel_normalization(rbf_kernel(X,gamma=c)) for c in grange]
 
-
+from sklearn.metrics import accuracy_score, roc_auc_score
+from MKLpy.model_selection import train_test_split
+from LOOCV import cross_val_predict
+from sklearn.svm import SVC
+import numpy as np
+from MKLpy.algorithms import EasyMKL, KOMD  # KOMD is not a MKL algorithm but a simple kernel machine like the SVM
 gamma_best_results = {}
 #Gamma tuning
 for c, KL in enumerate(KLC):
     ind = grange[c]
     KL = [KL]
     #train/test KL split (N.B. here we split a kernel list directly)
-    from MKLpy.model_selection import train_test_split
+
     KLtr,KLte,Ytr,Yte = train_test_split(KL, Y, test_size=.25)#, random_state=42)
 
     # MKL algorithms
-    from MKLpy.algorithms import EasyMKL, KOMD	# KOMD is not a MKL algorithm but a simple kernel machine like the SVM
+
     # from MKLpy.model_selection import cross_val_score, cross_val_predict
-    from LOOCV import cross_val_predict
-    from sklearn.svm import SVC
-    import numpy as np
+
     print ('tuning lambda for EasyMKL...', end='\n')
     base_learner = SVC(C=10000)	# simil hard-margin svm
     best_results = {}
@@ -98,7 +101,7 @@ for c, KL in enumerate(KLC):
     print('Best validation accuracy: %.3f with lambda: %i' %(best_results['score'],best_results['lam']))
 
     #evaluation on the test set
-    from sklearn.metrics import accuracy_score, roc_auc_score
+
     print ('done')
     clf = EasyMKL(learner=base_learner, lam=best_results['lam']).fit(KLtr,Ytr)
     y_pred = clf.predict(KLte)
@@ -119,6 +122,16 @@ for c, KL in enumerate(KLC):
 
 print('Best  accuracy: %.3f and ROCAUC: %.3f with gamma: %.3f' %(gamma_best_results['score'], gamma_best_results['roc'], gamma_best_results['KL']))
 
+base_learner = SVC(C=10000)
+clf = EasyMKL(learner=base_learner, lam=best_results['lam']).fit(KLtr, Ytr)
+y_pred = clf.predict(KLte)
+y_score = clf.decision_function(KLte)  # rank
+accuracy = accuracy_score(Yte, y_pred)
+roc_auc = roc_auc_score(Yte, y_score)
+tr_pred = clf.predict(KLtr)
+tr_err = accuracy_score(Ytr, tr_pred)
+print('Training Error: %.3f' % tr_err)
+print('accuracy on the test set: %.3f, roc AUC score: %.3f' % (accuracy, roc_auc))
 
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
@@ -126,19 +139,19 @@ from sklearn.metrics import roc_curve, auc
 # Compute ROC curve and ROC area for each class
 fpr = dict()
 tpr = dict()
-roc_auc = dict()
+roc_aucc = dict()
 for i in range(2):
     fpr[i], tpr[i], _ = roc_curve(Yte_best, y_score_best)
-    roc_auc[i] = auc(fpr[i], tpr[i])
+    roc_aucc[i] = auc(fpr[i], tpr[i])
 
 # Compute micro-average ROC curve and ROC area
 fpr["micro"], tpr["micro"], _ = roc_curve(Yte_best.ravel(), y_score_best.ravel())
-roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
+roc_aucc["micro"] = auc(fpr["micro"], tpr["micro"])
 
 plt.figure()
 lw = 2
 plt.plot(fpr[1], tpr[1], color='darkorange',
-         lw=lw, label='ROC curve (area = %0.2f)' % roc_auc[1
+         lw=lw, label='ROC curve (area = %0.2f)' % roc_aucc[1
     ])
 plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
 plt.xlim([0.0, 1.0])
@@ -148,3 +161,9 @@ plt.ylabel('True Positive Rate')
 plt.title('Receiver operating characteristic example')
 plt.legend(loc="lower right")
 plt.show()
+
+f= open("Figs/RBF.txt","w+")
+f.write('Best validation accuracy: %.9f with C: %i' %(gamma_best_results['score'],gamma_best_results['C']))
+f.write('Training Error: %.9f' % tr_err)
+f.write('Accuracy score: %.9f, roc AUC score: %.9f' % (accuracy, roc_auc))
+f.close()

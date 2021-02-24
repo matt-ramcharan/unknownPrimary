@@ -1,0 +1,1 @@
+Best validation accuracy: 0.998550725 with C: 1Training Error: 1.000000000Accuracy score: 0.990291262, roc AUC score: 0.999772451

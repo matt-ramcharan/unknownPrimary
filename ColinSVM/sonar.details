@@ -1,8 +1,0 @@
-Number of training patterns=     104
-Number of attributes=      60
-Sigma value if Gaussian kernel used:   .10000000D+01
-Choice of kernel=       1
-Training error=   .00000000D+00
-Test error=   .76923077D-01
- 
-sum_i alpha_i y_i=  -.10005885D-13
